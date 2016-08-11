@@ -5,18 +5,42 @@
 		<title>Notes</title>
 		<style media="screen">
 			body {
-				background-color: black;
+				background-image: url("http://pre06.deviantart.net/241d/th/pre/f/2011/308/f/4/page_background_by_30ml-d4f1qpa.jpg");
+				background-position: center;
 				color: white;
 				text-align: center;
+				text-shadow:1px 1px 2px #000000;
+			}
+			#title {
+				font-family: serif;
+				font-weight: 800;
+				font-size: 22px;
+				height: 30px;
+
+				background-color: rgba(1, 1, 1, 0.3);
+				margin-bottom: 4px;
 			}
 			#notes {
 				font-family: monospace;
 				font-weight: 800;
-				font-size: 16px;
+				font-size: 14px;
+
+				width: 100%;
+			}
+			#notes > span {
+				padding: 2px;
+				width: 100%;
+			}
+			.note-0 {
+				background-color: #444;
+			}
+			.note-1 {
+				background-color: #333;
 			}
 		</style>
 	</head>
 	<body>
+		<div id="title"></div>
 		<div id="notes"></div>
 		
 		<script type="text/javascript">
@@ -36,7 +60,23 @@
 						return;
 					}
 
-					document.getElementById("notes").innerText = this.responseText;
+					var lines = this.responseText.split("\n");
+
+					var title = lines[0];
+					document.getElementById("title").innerText = title;
+
+					document.getElementById("notes").innerText = "";
+
+					var notes = lines.slice(2);
+					for (var i in notes) {
+						var note = notes[i];
+						if (note == "") continue;
+
+						var el = document.createElement("div");
+						el.setAttribute("class", "note-" + (i % 2));
+						el.innerText = note;
+						document.getElementById("notes").appendChild(el);
+					}
 				});
 				oReq.open("GET", "notes/" + instrument + "/" + level + "/" + page + ".txt");
 				oReq.send();
