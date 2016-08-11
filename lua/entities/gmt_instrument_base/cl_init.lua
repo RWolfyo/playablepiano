@@ -1,4 +1,5 @@
 include("shared.lua")
+include("cl_midi.lua")
 
 ENT.DEBUG = false
 
@@ -16,13 +17,6 @@ surface.CreateFont( "InstrumentKeyLabel", {
 surface.CreateFont( "InstrumentNotice", {
 	size = 30, weight = 400, antialias = true, font = "Impact"
 } )
-
-// Load the MIDI module if it exists
-if ( file.Exists("lua/bin/gmcl_midi_win32.dll", "MOD") ||
-	 file.Exists("lua/bin/gmcl_midi_linux.dll", "MOD") ||
-	 file.Exists("lua/bin/gmcl_midi_osx.dll", "MOD") ) then
-	 	require("midi")
-end
 
 // For drawing purposes
 // Override by adding MatWidth/MatHeight to key data
@@ -66,73 +60,6 @@ ENT.BrowserHUD = {
 	Width = 1024,
 	Height = 768,
 }
-
-local playablepiano_midi_port = CreateClientConVar("playablepiano_midi_port","0",true)
-concommand.Add("playablepiano_midi_ports",function()
-	local ports = midi.GetPorts()
-	
-	if not next(ports) then return end
-	
-	local port = ports[playablepiano_midi_port:GetInt()] or next(ports)
-	
-	for k,v in next,midi.GetPorts() do
-		MsgN(k==port and "> " or "  ",k,"=",v)
-	end
-end)
-
-concommand.Add("playablepiano_midi_load",function()
-	require("midi")
-end)
-
-local playablepiano_midi_hear = CreateClientConVar("playablepiano_midi_hear","0",true)
-hook.Add( "MIDI", "gmt_instrument_base", function( time, command, note, velocity )
-	local instrument = LocalPlayer()
-	instrument = instrument and instrument:IsValid() and instrument
-	instrument = instrument.Instrument 
-	instrument = instrument and instrument:IsValid() and instrument
-	
-	if not instrument then return end
-    
-	// Zero velocity NOTE_ON substitutes NOTE_OFF
-	
-	-- bad argument #1 to 'GetCommandName' (number expected, got nil)
-	if not command then ErrorNoHalt("MIDI: nil command??\n") return end
-	
-    if !midi || midi.GetCommandName( command ) != "NOTE_ON" || velocity == 0 || !instrument.MIDIKeys || !instrument.MIDIKeys[note] then return end
-	
-	if not instrument.OnRegisteredKeyPlayed then return end
-	
-    instrument:OnRegisteredKeyPlayed( instrument.MIDIKeys[note].Sound, not playablepiano_midi_hear:GetBool() )
-end)
-
-local g_port
-function ENT:OpenMIDI()
-	
-	if not midi then return end
-	if midi.IsOpened() then return end
-	local ports = midi.GetPorts()
-	
-	if not next(ports) then return end
-	
-	local port = ports[playablepiano_midi_port:GetInt()] or next(ports)
-	
-	midi.Open( port )
-	
-	g_port = port
-end
-
-local function CloseMIDI()
-	
-	if not midi then return end
-	if not midi.IsOpened() then return end
-	local ports = midi.GetPorts()
-	
-	if not next(ports) then return end
-	if not g_port or not ports[g_port] then return end
-	local port = g_port
-	g_port = nil
-	midi.Close( port )
-end
 
 function ENT:Initialize()
 
@@ -558,19 +485,17 @@ net.Receive( "InstrumentNetwork", function( length, client )
 	if enum == INSTNET_USE then
 
 		if IsValid( LocalPlayer().Instrument ) then
+			hook.Run("OnInstrumentExited", LocalPlayer().Instrument)
 			LocalPlayer().Instrument:Shutdown()
 		end
-		
-		CloseMIDI()
 		
 		LocalPlayer().Instrument = ent
 		
 		if ent and ent:IsValid() then
 			ent.DelayKey = CurTime() + .1 // delay to the key a bit so they don't play on use key
-			if ent:IsValid() then
-				ent:CaptureAllKeys(true)
-				ent:OpenMIDI()
-			end
+
+			ent:CaptureAllKeys(true)
+			hook.Run("OnInstrumentEntered", ent)
 		end
 		
 	// Play the notes for everyone else
@@ -595,27 +520,5 @@ net.Receive( "InstrumentNetwork", function( length, client )
 		if sound then
 			ent:EmitSound( sound, 80 )
 		end
-
-		// Gather notes
-		/*local keys = net.ReadTable()
-
-		for i=1, #keys do
-
-			local key = keys[1]
-			local sound = ent:GetSound( key )
-
-			if sound then
-				ent:EmitSound( sound, 80 )
-
-				local eff = EffectData()
-				eff:SetOrigin( ent:GetPos() + Vector(0, 0, 60) )
-				eff:SetEntity( ent )
-
-				util.Effect( "musicnotes", eff, true, true )
-			end
-
-		end*/
-
 	end
-
 end )
