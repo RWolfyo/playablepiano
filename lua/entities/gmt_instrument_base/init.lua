@@ -180,7 +180,7 @@ end
 
 end*/
 
-function ENT:NetworkKey( key )
+function ENT:NetworkKey( key, velocity )
 
 	if !IsValid( self.Owner ) then return end // no reason to broadcast it
 
@@ -189,6 +189,7 @@ function ENT:NetworkKey( key )
 		net.WriteEntity( self )
 		net.WriteInt( INSTNET_HEAR, 3 )
 		net.WriteString( key )
+		net.WriteFloat( velocity )
 
 	net.Broadcast()
 
@@ -224,9 +225,10 @@ net.Receive( "InstrumentNetwork", function( length, client )
 
 			// Gather note
 			local key = net.ReadString()
+			local velocity = math.Clamp(net.ReadFloat(), 0, 1)
 		
 			// Send it!!
-			ent:NetworkKey( key )
+			ent:NetworkKey( key, velocity )
 
 			// Offset the note effect
 			local pos = string.sub( key, 2, 3 )

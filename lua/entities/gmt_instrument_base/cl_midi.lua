@@ -41,9 +41,19 @@ function ENT:OpenMIDIHelp()
 	gui.OpenURL("https://wyozi.github.io/playablepiano/#enabling-midi-support")
 end
 
+-- Number 128 obtained scientifically by smashing MIDI keys as hard as possible and recording the numbers.
+-- Highest number obtained using this method was 127, and almost broke testing equipment, so it is deemed
+-- to be the maximum achievable velocity.
+--
+-- However, we don't want equipment to break so this number is set to 100
+local playablepiano_midi_maxvelocity = CreateClientConVar("playablepiano_midi_maxvelocity", "100", true)
+
 local playablepiano_midi_hear = CreateClientConVar("playablepiano_midi_hear","0",true)
 function ENT:OnMIDIKeyPressed(note, velocity)
-	self:OnRegisteredKeyPlayed( self.MIDIKeys[note].Sound, not playablepiano_midi_hear:GetBool() )
+
+	local normalizedVelocity = velocity / (playablepiano_midi_maxvelocity:GetFloat() or 100)
+
+	self:OnRegisteredKeyPlayed( self.MIDIKeys[note].Sound, not playablepiano_midi_hear:GetBool(), normalizedVelocity )
 	
 	self.PressedMIDIKeys = self.PressedMIDIKeys or {}
 	self.PressedMIDIKeys[note] = true

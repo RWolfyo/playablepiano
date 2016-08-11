@@ -118,7 +118,13 @@ function ENT:Think()
 
 end
 
+function ENT:PlayKey(key, velocity)
+	local sound = self:GetSound( key )
+	if sound then
+		self:EmitSound(sound, 80, nil, velocity or 1)
+	end
 
+end
 
 function ENT:IsKeyTriggered( key )
 	return self.KeysDown[ key ] && !self.KeysWasDown[ key ]
@@ -128,13 +134,12 @@ function ENT:IsKeyReleased( key )
 	return self.KeysWasDown[ key ] && !self.KeysDown[ key ]
 end
 
-function ENT:OnRegisteredKeyPlayed( key, suppressSound )
+function ENT:OnRegisteredKeyPlayed( key, suppressSound, velocity )
+	velocity = math.Clamp(velocity or 0.8, 0, 1)
 
 	if ( !suppressSound ) then
-		// Play on the client first
-		local sound = self:GetSound( key )
-
-		self:EmitSound( sound, 100 )
+		-- Play on local client
+		self:PlayKey(key, velocity)
 	end
 
 	// Network it
@@ -143,6 +148,7 @@ function ENT:OnRegisteredKeyPlayed( key, suppressSound )
 		net.WriteEntity( self )
 		net.WriteInt( INSTNET_PLAY, 3 )
 		net.WriteString( key )
+		net.WriteFloat( velocity )
 
 	net.SendToServer()
 
@@ -199,7 +205,7 @@ function ENT:IsKeyDown(key, shift)
 		end
 	end
 
-	return false 
+	return false
 end
 
 function ENT:DrawKey( mainX, mainY, key, keyData, bShiftMode )
@@ -498,8 +504,7 @@ hook.Add( "HUDPaint", "InstrumentPaint", function()
 
 end )
 
-local playablepiano_hear = CreateClientConVar("playablepiano_hear","1",true)
---TODO: Make muting single players possible
+local playablepiano_hear = CreateClientConVar("playablepiano_hear", "1", true)
 
 net.Receive( "InstrumentNetwork", function( length, client )
 
@@ -532,7 +537,7 @@ net.Receive( "InstrumentNetwork", function( length, client )
 		if !ent.GetSound then return end
 		
 		// Don't play for the owner, they've already heard it!
-		if IsValid( LocalPlayer().Instrument ) && LocalPlayer().Instrument == ent then
+		if IsValid( LocalPlayer().Instrument ) and LocalPlayer().Instrument == ent then
 			return
 		end
 		
@@ -540,10 +545,10 @@ net.Receive( "InstrumentNetwork", function( length, client )
 		
 		// Gather note
 		local key = net.ReadString()
-		local sound = ent:GetSound( key )
+		local velocity = net.ReadFloat()
 
 		if sound then
-			ent:EmitSound( sound, 80 )
+			ent:PlayKey(key, velocity)
 		end
 	end
 end )
