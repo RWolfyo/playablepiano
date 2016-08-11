@@ -125,22 +125,6 @@ function ENT:GetSound( snd )
 	return self.SoundDir .. snd .. self.SoundExt
 end
 
-if SERVER then
-	function ENT:Intiailize()
-		self:PrecacheSounds()
-	end
-
-	function ENT:PrecacheSounds()
-
-		if !self.Keys then return end
-
-		for _, keyData in pairs( self.Keys ) do
-			util.PrecacheSound( self:GetSound( keyData.Sound ) )
-		end
-
-	end
-end
-
 hook.Add( "PhysgunPickup", "NoPickupInsturmentChair", function( ply, ent )
 
 	local inst = ent:GetOwner()

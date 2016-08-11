@@ -25,6 +25,17 @@ function ENT:Initialize()
 		self.Owner = nil
 	end)
 	
+	self:PrecacheSounds()
+end
+
+function ENT:PrecacheSounds()
+
+	if !self.Keys then return end
+
+	for _, keyData in pairs( self.Keys ) do
+		util.PrecacheSound( self:GetSound( keyData.Sound ) )
+	end
+
 end
 
 function ENT:InitializeAfter()
