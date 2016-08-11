@@ -180,15 +180,21 @@ function ENT:SendKeys()
 
 end
 
-function ENT:IsKeyDown(key)
-	if input.IsKeyDown(key) then
+function ENT:IsKeyDown(key, shift)
+	shift = not not shift -- make sure it's bool
+
+	if input.IsKeyDown(key) and input.IsShiftDown() == shift then
 		return true
 	end
 
 	if self.MIDIKeys then
 		for midiKey, data in pairs(self.MIDIKeys) do
-			if data.Key == key and self:IsMIDIKeyDown(midiKey) then
-				return true
+			if data.Key == key and (not not data.Shift) == shift then
+				if self:IsMIDIKeyDown(midiKey) then
+					return true
+				else
+					break
+				end
 			end
 		end
 	end
@@ -198,9 +204,9 @@ end
 
 function ENT:DrawKey( mainX, mainY, key, keyData, bShiftMode )
 
-	local keyDown = self:IsKeyDown(key)
+	local keyDown = self:IsKeyDown(key, bShiftMode)
 
-	if keyData.Material and keyDown and ( ( self.ShiftMode && bShiftMode ) || ( !self.ShiftMode && !bShiftMode ) ) then
+	if keyData.Material and keyDown then
 		surface.SetTexture( self.KeyMaterialIDs[ keyData.Material ] )
 		surface.DrawTexturedRect( mainX + keyData.X, mainY + keyData.Y,
 									self.DefaultMatWidth, self.DefaultMatHeight )
@@ -213,7 +219,7 @@ function ENT:DrawKey( mainX, mainY, key, keyData, bShiftMode )
 		local offsetY = self.DefaultTextY
 		local color = self.DefaultTextColor
 
-		if keyDown and ( ( self.ShiftMode && bShiftMode ) || ( !self.ShiftMode && !bShiftMode ) ) then
+		if keyDown then
 			color = self.DefaultTextColorActive
 			if keyData.AColor then color = keyData.AColor end
 		else
