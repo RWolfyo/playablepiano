@@ -3,6 +3,8 @@ AddCSLuaFile( "cl_midi.lua" )
 AddCSLuaFile( "shared.lua" )
 include( "shared.lua" )
 
+resource.AddWorkshop("741857902")
+
 util.AddNetworkString( "InstrumentNetwork" )
 
 function ENT:Initialize()

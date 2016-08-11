@@ -488,7 +488,7 @@ function ENT:ShiftMod() end // Called when they press shift
 function ENT:CtrlMod() end // Called when they press cntrl
 
 hook.Add( "HUDPaint", "InstrumentPaint", function()
-
+	
 	if IsValid( LocalPlayer().Instrument ) then
 
 		// HUD
