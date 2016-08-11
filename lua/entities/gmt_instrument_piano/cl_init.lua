@@ -45,8 +45,9 @@ ENT.AdvMainHUD = {
 	Height = 195,
 }
 
+local playablepiano_notesurl = CreateClientConVar("playablepiano_notesurl", "https://wyozi.github.io/playablepiano/notes.html", true)
 ENT.BrowserHUD = {
-	URL = "https://wyozi.github.io/playablepiano/notes.html",
+	URL = playablepiano_notesurl:GetString(),
 	Show = true, // display the sheet music?
 	X = ( ScrW() / 2 ),
 	Y = ENT.MainHUD.Y - 190,

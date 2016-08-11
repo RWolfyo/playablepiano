@@ -53,7 +53,7 @@ ENT.AdvMainHUD = {
 }
 
 ENT.BrowserHUD = {
-	URL = "https://wyozi.github.io/playablepiano/notes.html",
+	URL = "https://www.google.com",
 	Show = true, // display the sheet music?
 	X = 0,
 	Y = 0,
@@ -366,8 +366,6 @@ function ENT:OpenSheetMusic()
 	timer.Simple( .1, function()
 
 		if ValidPanel( self.Browser ) then
-			self:UpdateSheetMusicState()
-
 			self.Browser:SetVisible( true )
 			self.Browser:SetPos( x, self.BrowserHUD.Y )
 			self.Browser:SetSize( width, self.BrowserHUD.Height )
@@ -375,6 +373,12 @@ function ENT:OpenSheetMusic()
 
 	end )
 
+	-- Loading JS context may take a bit longer
+	timer.Simple( 0.5, function()
+		if ValidPanel( self.Browser ) then
+			self:UpdateSheetMusicState()
+		end
+	end)
 end
 
 function ENT:CloseSheetMusic()
