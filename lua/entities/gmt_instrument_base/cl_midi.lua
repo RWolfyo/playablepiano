@@ -2,7 +2,8 @@
 if ( file.Exists("lua/bin/gmcl_midi_win32.dll", "MOD") or
 	 file.Exists("lua/bin/gmcl_midi_linux.dll", "MOD") or
 	 file.Exists("lua/bin/gmcl_midi_osx.dll", "MOD") ) then
-	 	require("midi")
+	
+	require("midi")
 end
 
 local playablepiano_midi_port = CreateClientConVar("playablepiano_midi_port","0",true)
@@ -18,9 +19,27 @@ concommand.Add("playablepiano_midi_ports",function()
 	end
 end)
 
-concommand.Add("playablepiano_midi_load",function()
-	require("midi")
-end)
+local function GetActiveMIDIDevice()
+	local ports = midi.GetPorts()
+	
+	if not next(ports) then return end
+	
+	return ports[playablepiano_midi_port:GetInt()] or next(ports)
+end
+
+function ENT:IsMIDIAvailable()
+	return not not midi
+end
+function ENT:IsMIDIEnabled()
+	return self:IsMIDIAvailable() and midi.IsOpened()
+end
+function ENT:GetActiveMIDIDevice()
+	return GetActiveMIDIDevice()
+end
+
+function ENT:OpenMIDIHelp()
+	gui.OpenURL("https://wyozi.github.io/playablepiano/#enabling-midi-support")
+end
 
 local playablepiano_midi_hear = CreateClientConVar("playablepiano_midi_hear","0",true)
 hook.Add( "MIDI", "gmt_instrument_base", function( time, command, note, velocity )
@@ -48,13 +67,11 @@ local function OpenMIDI()
 	
 	if not midi then return end
 	if midi.IsOpened() then return end
-	local ports = midi.GetPorts()
 	
-	if not next(ports) then return end
-	
-	local port = ports[playablepiano_midi_port:GetInt()] or next(ports)
-	
-	midi.Open( port )
+	local device = GetActiveMIDIDevice()
+	if not device then return end
+
+	midi.Open(device)
 	
 	g_port = port
 end

@@ -46,6 +46,11 @@ ENT.ControlKeys = {
 	[KEY_LSHIFT] = function( inst, bPressed )
 		inst:ShiftMod()
 	end,
+
+    [KEY_F3] = function( inst, bPressed )
+		if ( !bPressed ) then return end
+		inst:OpenMIDIHelp()
+    end 
 }
 
 ENT.MIDIKeys = {

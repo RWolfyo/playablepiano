@@ -281,6 +281,21 @@ function ENT:DrawHUD()
 						self.DefaultTextInfoColor, TEXT_ALIGN_CENTER )
 	end
 
+	if self.AdvancedMode then
+		
+		local text
+		if self:IsMIDIEnabled() then
+			text = "ON (" .. (self:GetActiveMIDIDevice() or "unknown") .. ")"
+		else
+			text = "OFF (PRESS F3 FOR HELP)"
+		end
+
+		draw.DrawText( "MIDI: " .. text, "InstrumentKeyLabel",
+						mainX + 15, mainY + mainHeight + 30,
+						self.DefaultTextInfoColor, TEXT_ALIGN_LEFT )
+		
+	end
+
 end
 
 // This is so I don't have to do GetTextureID in the table EACH TIME, ugh
