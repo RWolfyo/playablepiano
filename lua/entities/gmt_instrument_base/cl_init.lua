@@ -321,10 +321,6 @@ function ENT:OpenSheetMusic()
 
 	local url = self.BrowserHUD.URL
 
-	if self.AdvancedMode then
-		url = self.BrowserHUD.URL .. "?&adv=1"
-	end
-
 	local x = self.BrowserHUD.X - ( width / 2 )
 
 	self.Browser:OpenURL( url )
