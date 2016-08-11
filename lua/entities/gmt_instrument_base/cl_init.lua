@@ -62,9 +62,7 @@ ENT.BrowserHUD = {
 }
 
 function ENT:Initialize()
-
 	self:PrecacheMaterials()
-	
 end
 
 function ENT:Think()
@@ -182,17 +180,30 @@ function ENT:SendKeys()
 
 end
 
+function ENT:IsKeyDown(key)
+	if input.IsKeyDown(key) then
+		return true
+	end
+
+	if self.MIDIKeys then
+		for midiKey, data in pairs(self.MIDIKeys) do
+			if data.Key == key and self:IsMIDIKeyDown(midiKey) then
+				return true
+			end
+		end
+	end
+
+	return false 
+end
+
 function ENT:DrawKey( mainX, mainY, key, keyData, bShiftMode )
 
-	if keyData.Material then
-		if ( self.ShiftMode && bShiftMode && input.IsKeyDown( key ) ) ||
-		   ( !self.ShiftMode && !bShiftMode && input.IsKeyDown( key ) ) then
+	local keyDown = self:IsKeyDown(key)
 
-			surface.SetTexture( self.KeyMaterialIDs[ keyData.Material ] )
-			surface.DrawTexturedRect( mainX + keyData.X, mainY + keyData.Y,
-									  self.DefaultMatWidth, self.DefaultMatHeight )
-		end
-
+	if keyData.Material and keyDown and ( ( self.ShiftMode && bShiftMode ) || ( !self.ShiftMode && !bShiftMode ) ) then
+		surface.SetTexture( self.KeyMaterialIDs[ keyData.Material ] )
+		surface.DrawTexturedRect( mainX + keyData.X, mainY + keyData.Y,
+									self.DefaultMatWidth, self.DefaultMatHeight )
 	end
 
 	// Draw keys
@@ -202,9 +213,7 @@ function ENT:DrawKey( mainX, mainY, key, keyData, bShiftMode )
 		local offsetY = self.DefaultTextY
 		local color = self.DefaultTextColor
 
-		if ( self.ShiftMode && bShiftMode && input.IsKeyDown( key ) ) ||
-		   ( !self.ShiftMode && !bShiftMode && input.IsKeyDown( key ) ) then
-
+		if keyDown and ( ( self.ShiftMode && bShiftMode ) || ( !self.ShiftMode && !bShiftMode ) ) then
 			color = self.DefaultTextColorActive
 			if keyData.AColor then color = keyData.AColor end
 		else

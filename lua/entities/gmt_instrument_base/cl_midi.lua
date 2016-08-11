@@ -42,24 +42,38 @@ function ENT:OpenMIDIHelp()
 end
 
 local playablepiano_midi_hear = CreateClientConVar("playablepiano_midi_hear","0",true)
+function ENT:OnMIDIKeyPressed(note, velocity)
+	self:OnRegisteredKeyPlayed( self.MIDIKeys[note].Sound, not playablepiano_midi_hear:GetBool() )
+	
+	self.PressedMIDIKeys = self.PressedMIDIKeys or {}
+	self.PressedMIDIKeys[note] = true
+end
+function ENT:OnMIDIKeyReleased(note, velocity)
+	if self.PressedMIDIKeys then
+		self.PressedMIDIKeys[note] = false
+	end
+end
+function ENT:IsMIDIKeyDown(midiKey)
+	return self.PressedMIDIKeys and self.PressedMIDIKeys[midiKey]
+end
+
 hook.Add( "MIDI", "gmt_instrument_base", function( time, command, note, velocity )
+	if not command then ErrorNoHalt("MIDI: nil command??\n") return end
+
 	local instrument = LocalPlayer()
 	instrument = instrument and instrument:IsValid() and instrument
 	instrument = instrument.Instrument 
 	instrument = instrument and instrument:IsValid() and instrument
 	
-	if not instrument then return end
-    
-	// Zero velocity NOTE_ON substitutes NOTE_OFF
-	
-	-- bad argument #1 to 'GetCommandName' (number expected, got nil)
-	if not command then ErrorNoHalt("MIDI: nil command??\n") return end
-	
-    if !midi || midi.GetCommandName( command ) != "NOTE_ON" || velocity == 0 || !instrument.MIDIKeys || !instrument.MIDIKeys[note] then return end
-	
-	if not instrument.OnRegisteredKeyPlayed then return end
-	
-    instrument:OnRegisteredKeyPlayed( instrument.MIDIKeys[note].Sound, not playablepiano_midi_hear:GetBool() )
+	if not instrument or not instrument.OnMIDIKeyPressed or not instrument.MIDIKeys or not instrument.MIDIKeys[note] then return end
+
+	local commandName = midi.GetCommandName(command)
+
+	if commandName == "NOTE_ON" and velocity > 0 then
+    	instrument:OnMIDIKeyPressed(note, velocity)
+	elseif commandName == "NOTE_OFF" or (commandName == "NOTE_ON" and velocity == 0) then
+    	instrument:OnMIDIKeyReleased(note, velocity)
+	end
 end)
 
 local g_port
