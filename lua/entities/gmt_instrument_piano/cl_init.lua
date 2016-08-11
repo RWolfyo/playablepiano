@@ -46,7 +46,7 @@ ENT.AdvMainHUD = {
 }
 
 ENT.BrowserHUD = {
-	URL = "http://www.gmtower.org/apps/instruments/piano.php?",
+	URL = "https://wyozi.github.io/playablepiano/notes.html",
 	Show = true, // display the sheet music?
 	X = ( ScrW() / 2 ),
 	Y = ENT.MainHUD.Y - 190,

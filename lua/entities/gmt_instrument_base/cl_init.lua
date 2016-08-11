@@ -53,7 +53,7 @@ ENT.AdvMainHUD = {
 }
 
 ENT.BrowserHUD = {
-	URL = "http://www.gmtower.org/apps/instruments/piano.php",
+	URL = "https://wyozi.github.io/playablepiano/notes.html",
 	Show = true, // display the sheet music?
 	X = 0,
 	Y = 0,
@@ -334,6 +334,8 @@ function ENT:OpenSheetMusic()
 	timer.Simple( .1, function()
 
 		if ValidPanel( self.Browser ) then
+			self:UpdateSheetMusicState()
+
 			self.Browser:SetVisible( true )
 			self.Browser:SetPos( x, self.BrowserHUD.Y )
 			self.Browser:SetSize( width, self.BrowserHUD.Height )
@@ -360,6 +362,11 @@ function ENT:ToggleSheetMusic()
 		self:OpenSheetMusic()
 	end
 
+end
+
+function ENT:UpdateSheetMusicState()
+	local level = self.AdvancedMode and "advanced" or "basic"
+	self.Browser:Exec( "switchLevel('" .. level .. "')" )
 end
 
 function ENT:SheetMusicForward()
@@ -438,11 +445,9 @@ end
 function ENT:ToggleAdvancedMode()
 	self.AdvancedMode = !self.AdvancedMode
 
-	if ValidPanel( self.Browser ) then
-		self:CloseSheetMusic()
-		self:OpenSheetMusic()
-	end
+	if !ValidPanel( self.Browser ) then return end
 
+	self:UpdateSheetMusicState()
 end
 
 function ENT:ToggleShiftMode()
