@@ -56,17 +56,13 @@ ENT.BrowserHUD = {
 }
 
 function ENT:CtrlMod()
-
 	self:ToggleAdvancedMode()
 
-	if self.OldKeys then
-		self.Keys = self.OldKeys
-		self.OldKeys = nil
-	else
-		self.OldKeys = self.Keys
+	if self.AdvancedMode then
 		self.Keys = self.AdvancedKeys
+	else
+		self.Keys = self.BasicKeys
 	end
-
 end
 
 function ENT:ShiftMod()

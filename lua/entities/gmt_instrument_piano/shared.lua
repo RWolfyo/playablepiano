@@ -12,7 +12,7 @@ ENT.Model		= Model( "models/fishy/furniture/piano.mdl" )
 ENT.SoundDir	= "GModTower/lobby/instruments/piano/"
 
 local darker = Color( 100, 100, 100, 150 )
-ENT.Keys = {
+ENT.BasicKeys = {
 	[KEY_A] = { Sound = "a15", Material = "left", Label = "A", X = 19, Y = 86 },
 	[KEY_S] = { Sound = "a16", Material = "middle", Label = "S", X = 44, Y = 86 },
 	[KEY_D] = { Sound = "a17", Material = "right", Label = "D", X = 68, Y = 86 },
@@ -33,6 +33,9 @@ ENT.Keys = {
 	[KEY_O] = { Sound = "b16",	Material = "top", Label = "O", X = 208, Y = 31, TextX = 7, TextY = 90, Color = darker },
 	[KEY_P] = { Sound = "b17", Material = "top", Label = "P", X = 239, Y = 31, TextX = 7, TextY = 90, Color = darker },
 }
+
+-- Set basic keys as the default set of keys
+ENT.Keys = ENT.BasicKeys
 
 ENT.AdvancedKeys = {
 	[KEY_1] =

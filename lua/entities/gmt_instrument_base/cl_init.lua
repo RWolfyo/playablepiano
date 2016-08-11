@@ -445,12 +445,6 @@ function ENT:Shutdown()
 	
 	self.AdvancedMode = false
 	self.ShiftMode = false
-
-	if self.OldKeys then
-		self.Keys = self.OldKeys
-		self.OldKeys = nil
-	end
-
 end
 
 function ENT:ToggleAdvancedMode()
