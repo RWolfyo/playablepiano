@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Notes</title>
+		<style media="screen">
+			body {
+				background-color: black;
+				color: white;
+				text-align: center;
+			}
+			#notes {
+				font-family: monospace;
+				font-weight: 800;
+				font-size: 16px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="notes"></div>
+		
+		<script type="text/javascript">
+			var instrument = "piano";
+			var level = "basic";
+			var page = 0;
+			
+			function load() {
+				document.getElementById("notes").innerText = "Loading..";
+				
+				var oReq = new XMLHttpRequest();
+				oReq.addEventListener("load", function() {
+					// if page was not found we probably overflowed; in that case return back to zero
+					if (this.status == 404) {
+						page = 0;
+						load();
+						return;
+					}
+
+					document.getElementById("notes").innerText = this.responseText;
+				});
+				oReq.open("GET", "notes/" + instrument + "/" + level + "/" + page + ".txt");
+				oReq.send();
+			}
+			
+			function switchLevel(newLevel) {
+				level = newLevel;
+				page = 0;
+				load();
+			}
+			function switchInstrument(newInstrument) {
+				instrument = newInstrument;
+				page = 0;
+				load();
+			}
+
+			function pageBack() {
+				page = Math.max(page - 1, 0);
+				load();
+			}
+			function pageForward() {
+				page++;
+				load();
+			}
+			
+			window.onload = load;
+		</script>
+	</body>
+</html>
