@@ -5,7 +5,8 @@ This repository contains the code for playable piano for Garry's Mod. The conten
 
 ### Links ###
 
-* [Steam Workshop](http://steamcommunity.com/sharedfiles/filedetails/?id=104548572)
+* [Steam Workshop](http://steamcommunity.com/sharedfiles/filedetails/?id=741857902)
+* [Original Steam Workshop](http://steamcommunity.com/sharedfiles/filedetails/?id=104548572)
 
 ### Notes extending gmt\_instrument_base ###
 
