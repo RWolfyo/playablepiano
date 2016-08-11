@@ -1,6 +1,6 @@
 {
   "name": "Playablepiano",
   "tagline": "Playable Piano for Garry's Mod",
-  "body": "\r\n\r\n### Enabling MIDI support\r\nSee installation instructions for the MIDI module at https://github.com/FPtje/gmcl_midi#download\r\nOnce you have installed the module, rejoin the server to activate the module.",
+  "body": "This is a fork of playable piano, originally created by MacDGuy.\r\n\r\n### Credits  \r\n- MacDGuy for creating the original addon  \r\n- FPtje for MIDI module and PR to playable piano  \r\n- jackson-c & Python1320 for misc fixes  \r\n\r\n### Enabling MIDI support  \r\nSee installation instructions for the MIDI module at https://github.com/FPtje/gmcl_midi#download  \r\nOnce you have installed the module, rejoin the server to activate the module.",
   "note": "Don't delete this file! It's used internally to help with page regeneration."
 }
