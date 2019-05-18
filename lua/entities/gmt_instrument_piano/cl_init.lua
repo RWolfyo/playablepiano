@@ -2,11 +2,11 @@ include("shared.lua")
 
 ENT.AllowAdvancedMode = true
 
-// For drawing purposes
-// Override by adding MatWidth/MatHeight to key data
+-- For drawing purposes
+-- Override by adding MatWidth/MatHeight to key data
 ENT.DefaultMatWidth = 32
 ENT.DefaultMatHeight = 128
-// Override by adding TextX/TextY to key data
+-- Override by adding TextX/TextY to key data
 ENT.DefaultTextX = 11
 ENT.DefaultTextY = 100
 ENT.DefaultTextColor = Color( 150, 150, 150, 150 )
@@ -48,8 +48,8 @@ ENT.AdvMainHUD = {
 local playablepiano_notesurl = CreateClientConVar("playablepiano_notesurl", "https://wyozi.github.io/playablepiano/notes.html", true)
 ENT.BrowserHUD = {
 	URL = playablepiano_notesurl:GetString(),
-	Show = true, // display the sheet music?
-	X = ( ScrW() / 2 ),
+	Show = true, -- display the sheet music?
+	X =  ScrW() / 2,
 	Y = ENT.MainHUD.Y - 190,
 	Width = 450,
 	Height = 250,

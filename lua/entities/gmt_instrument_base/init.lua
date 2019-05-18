@@ -26,7 +26,7 @@ function ENT:Initialize()
 	timer.Simple(0, function()
 		self.Owner = nil
 	end)
-	
+
 	self:PrecacheSounds()
 end
 
@@ -49,7 +49,7 @@ end
 
 function ENT:SetupChair( vecmdl, angmdl, vecvehicle, angvehicle )
 
-	// Chair Model
+	-- Chair Model
 	self.ChairMDL = ents.Create( "prop_physics_multiplayer" )
 	self.ChairMDL:SetModel( self.ChairModel )
 	self.ChairMDL:SetParent( self )
@@ -58,20 +58,20 @@ function ENT:SetupChair( vecmdl, angmdl, vecvehicle, angvehicle )
 	self.ChairMDL:DrawShadow( false )
 
 	self.ChairMDL:SetCollisionGroup( COLLISION_GROUP_DEBRIS_TRIGGER )
-	
+
 	self.ChairMDL:Spawn()
 	self.ChairMDL:Activate()
 	self.ChairMDL:SetOwner( self )
-	
+
 	local phys = self.ChairMDL:GetPhysicsObject()
 	if phys:IsValid() then
 		phys:EnableMotion(false)
 		phys:Sleep()
 	end
-	
+
 	self.ChairMDL:SetKeyValue( "minhealthdmg", "999999" )
-	
-	// Chair Vehicle
+
+	-- Chair Vehicle
 	self.Chair = ents.Create( "prop_vehicle_prisoner_pod" )
 	self.Chair:SetModel( "models/nova/airboat_seat.mdl" )
 	self.Chair:SetKeyValue( "vehiclescript","scripts/vehicles/prisoner_pod.txt" )
@@ -88,13 +88,13 @@ function ENT:SetupChair( vecmdl, angmdl, vecvehicle, angvehicle )
 
 	self.Chair:Spawn()
 	self.Chair:Activate()
-	
-	local phys = self.Chair:GetPhysicsObject()
-	if phys:IsValid() then
-		phys:EnableMotion(false)
-		phys:Sleep()
+
+	local phys2 = self.Chair:GetPhysicsObject()
+	if phys2:IsValid() then
+		phys2:EnableMotion(false)
+		phys2:Sleep()
 	end
-	
+
 end
 
 local function HookChair( ply, ent )
@@ -118,7 +118,7 @@ local function HookChair( ply, ent )
 
 end
 
-// Quick fix for overriding the instrument chair seating
+-- Quick fix for overriding the instrument chair seating
 hook.Add( "CanPlayerEnterVehicle", "InstrumentChairHook", HookChair )
 hook.Add( "PlayerUse", "InstrumentChairModelHook", HookChair )
 
@@ -158,7 +158,7 @@ function ENT:RemoveOwner()
 		net.WriteEntity( nil )
 		net.WriteInt( INSTNET_USE, 3 )
 	net.Send( self.Owner )
-		
+
 	self.Owner:ExitVehicle( self.Chair )
 
 	self.Owner:SetPos( self.Owner.EntryPoint )
@@ -168,9 +168,9 @@ function ENT:RemoveOwner()
 
 end
 
-/*function ENT:NetworkKeys( keys )
+--[[function ENT:NetworkKeys( keys )
 
-	if !IsValid( self.Owner ) then return end // no reason to broadcast it
+	if !IsValid( self.Owner ) then return end -- no reason to broadcast it
 
 	net.Start( "InstrumentNetwork" )
 
@@ -180,11 +180,11 @@ end
 
 	net.Broadcast()
 
-end*/
+end--]]
 
 function ENT:NetworkKey( key, velocity )
 
-	if !IsValid( self.Owner ) then return end // no reason to broadcast it
+	if !IsValid( self.Owner ) then return end -- no reason to broadcast it
 
 	net.Start( "InstrumentNetwork" )
 
@@ -201,7 +201,7 @@ function ENT:OnRemove()
 	self:RemoveOwner()
 end
 
-// Returns the approximate "fitted" number based on linear regression.
+-- Returns the approximate "fitted" number based on linear regression.
 function math.Fit( val, valMin, valMax, outMin, outMax )
 	return ( val - valMin ) * ( outMax - outMin ) / ( valMax - valMin ) + outMin
 end
@@ -213,39 +213,39 @@ net.Receive( "InstrumentNetwork", function( length, client )
 
 	local enum = net.ReadInt( 3 )
 
-	// When the player plays notes
+	-- When the player plays notes
 	if enum == INSTNET_PLAY then
 
-		// Filter out non-instruments
+		-- Filter out non-instruments
 		if ent.Base ~= "gmt_instrument_base" then return end
 
-		// This instrument doesn't have an owner...
+		-- This instrument doesn't have an owner...
 		if !IsValid( ent.Owner ) then return end
 
-		// Check if the player is actually the owner of the instrument
+		-- Check if the player is actually the owner of the instrument
 		if client == ent.Owner then
 
-			// Gather note
+			-- Gather note
 			local key = net.ReadString()
 			local velocity = math.Clamp(net.ReadFloat(), 0, 1)
-		
-			// Send it!!
+
+			-- Send it!!
 			ent:NetworkKey( key, velocity )
 
-			// Offset the note effect
+			-- Offset the note effect
 			local pos = string.sub( key, 2, 3 )
 			pos = math.Fit( tonumber( pos ), 1, 36, -3.8, 4 )
 
-			// Note effect
+			-- Note effect
 			local eff = EffectData()
 				eff:SetOrigin( client:GetPos() + Vector( -15, pos * 10, -5 ) )
 			util.Effect( "musicnotes", eff, true, true )
 
-			// Gather notes
-			/*local keys = net.ReadTable()
-		
-			// Send them!!
-			ent:NetworkKeys( keys )*/
+			-- Gather notes
+			--[[local keys = net.ReadTable()
+
+			-- Send them!!
+			ent:NetworkKeys( keys )--]]
 
 		end
 
@@ -255,19 +255,19 @@ end )
 
 concommand.Add( "instrument_leave", function( ply, cmd, args )
 
-	if #args < 1 then return end // no ent id
+	if #args < 1 then return end -- no ent id
 
-	// Get the instrument
+	-- Get the instrument
 	local entid = args[1]
 	local ent = ents.GetByIndex( entid )
 
-	// Filter out non-instruments
+	-- Filter out non-instruments
 	if !IsValid( ent ) or ent.Base ~= "gmt_instrument_base" then return end
 
-	// This instrument doesn't have an owner...
+	-- This instrument doesn't have an owner...
 	if !IsValid( ent.Owner ) then return end
 
-	// Leave instrument
+	-- Leave instrument
 	if ply == ent.Owner then
 		ent:RemoveOwner()
 	end
