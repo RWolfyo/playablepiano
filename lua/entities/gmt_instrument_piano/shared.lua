@@ -4,7 +4,7 @@ ENT.PrintName		= "Playable Piano"
 ENT.Author			= "MacDGuy"
 ENT.Contact			= "http://www.gmtower.org"
 ENT.Purpose			= "A fully playable piano!"
-ENT.Category		= "Fun + Games"
+ENT.Category		= "Playable Piano"
 ENT.Spawnable		= true
 ENT.AdminSpawnable 	= true
 

@@ -2,7 +2,7 @@
 if ( file.Exists("lua/bin/gmcl_midi_win32.dll", "MOD") or
 	 file.Exists("lua/bin/gmcl_midi_win64.dll", "MOD") or
 	 file.Exists("lua/bin/gmcl_midi_linux.dll", "MOD") or
-	 ile.Exists("lua/bin/gmcl_midi_osx.dll", "MOD") ) then
+	 file.Exists("lua/bin/gmcl_midi_osx.dll", "MOD") ) then
 
 	require("midi")
 end
