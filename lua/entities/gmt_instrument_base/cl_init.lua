@@ -436,7 +436,7 @@ function ENT:CaptureAllKeys(capture)
 		function g_dummy:OnMouseReleased()
 			self:Remove()
 
-			local instrument = LocalPlayer().Instrument 
+			local instrument = LocalPlayer().Instrument
 			instrument = instrument and instrument:IsValid() and instrument
 
 			RunConsoleCommand( "instrument_leave", instrument and instrument:EntIndex() )

@@ -3,7 +3,7 @@ AddCSLuaFile( "cl_midi.lua" )
 AddCSLuaFile( "shared.lua" )
 include( "shared.lua" )
 
-resource.AddWorkshop("741857902")
+resource.AddWorkshop("1745968731")
 
 util.AddNetworkString( "InstrumentNetwork" )
 
