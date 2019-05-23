@@ -49,8 +49,8 @@ ENT.ControlKeys = {
 	end,
 
 	[KEY_F3] = function( inst, bPressed )
-	if ( !bPressed ) then return end
-	inst:OpenMIDIHelp()
+		if ( !bPressed ) then return end
+		inst:OpenMIDIHelp()
 	end
 }
 

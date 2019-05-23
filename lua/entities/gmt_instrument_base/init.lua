@@ -55,9 +55,10 @@ function ENT:SetupChair( vecmdl, angmdl, vecvehicle, angvehicle )
 	self.ChairMDL:SetParent( self )
 	self.ChairMDL:SetPos( self:LocalToWorld( vecmdl ) )
 	self.ChairMDL:SetAngles( self:GetAngles() + angmdl )
+	self.ChairMDL:SetNotSolid( true )
 	self.ChairMDL:DrawShadow( false )
 
-	self.ChairMDL:SetCollisionGroup( COLLISION_GROUP_DEBRIS_TRIGGER )
+	self.ChairMDL:SetCollisionGroup( COLLISION_GROUP_WEAPON )
 
 	self.ChairMDL:Spawn()
 	self.ChairMDL:Activate()
@@ -81,7 +82,7 @@ function ENT:SetupChair( vecmdl, angmdl, vecvehicle, angvehicle )
 	self.Chair:SetNotSolid( true )
 	self.Chair:SetNoDraw( true )
 	self.Chair:DrawShadow( false )
-	self.Chair:SetCollisionGroup( COLLISION_GROUP_DEBRIS_TRIGGER )
+	self.Chair:SetCollisionGroup( COLLISION_GROUP_WEAPON )
 
 	self.Chair.HandleAnimation = HandleRollercoasterAnimation
 	self.Chair:SetOwner( self )

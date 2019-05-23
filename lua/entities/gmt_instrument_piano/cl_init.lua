@@ -45,7 +45,7 @@ ENT.AdvMainHUD = {
 	Height = 195,
 }
 
-local playablepiano_notesurl = CreateClientConVar("playablepiano_notesurl", "https://wyozi.github.io/playablepiano/notes.html", true)
+local playablepiano_notesurl = CreateClientConVar("playablepiano_notesurl", "http://www.gmtower.org/apps/instruments/piano.php", true)
 ENT.BrowserHUD = {
 	URL = playablepiano_notesurl:GetString(),
 	Show = true, -- display the sheet music?
